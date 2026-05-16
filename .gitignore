@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+.env*.local
+*.tsbuildinfo
+.vercel
+
+# local runtime data (contact form log, etc.) — contains private submissions
+.data/
+
+# local Claude Code settings
+.claude/
+
+# design source bundle (kept for reference, not committed)
+_design.tar.gz
+portfolio/
