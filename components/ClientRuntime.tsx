@@ -363,12 +363,17 @@ export function ClientRuntime() {
 
     // ─── side rail active state + sliding indicator ─────────────────
     const railLinks = document.querySelectorAll<HTMLAnchorElement>(".side-rail a");
+    const mobileNavLinks = document.querySelectorAll<HTMLAnchorElement>(".mobile-nav-link");
     const secIo = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) {
+            const id = (e.target as HTMLElement).id;
             railLinks.forEach((l) =>
-              l.classList.toggle("active", l.dataset.section === (e.target as HTMLElement).id),
+              l.classList.toggle("active", l.dataset.section === id),
+            );
+            mobileNavLinks.forEach((l) =>
+              l.classList.toggle("active", l.dataset.section === id),
             );
             // FLIP-tween the rail indicator to the active link
             requestAnimationFrame(moveRailIndicator);
@@ -381,6 +386,45 @@ export function ClientRuntime() {
       const el = document.getElementById(id);
       if (el) secIo.observe(el);
     });
+
+    // ─── mobile nav drawer ──────────────────────────────────────────
+    const navToggle = document.getElementById("nav-toggle") as HTMLButtonElement | null;
+    const navClose = document.getElementById("nav-close") as HTMLButtonElement | null;
+    const mobileNav = document.getElementById("mobile-nav") as HTMLElement | null;
+    function openMobileNav() {
+      if (!mobileNav) return;
+      mobileNav.classList.add("open");
+      mobileNav.setAttribute("aria-hidden", "false");
+      mobileNav.removeAttribute("inert");
+      navToggle?.setAttribute("aria-expanded", "true");
+      document.body.classList.add("nav-open");
+    }
+    function closeMobileNav() {
+      if (!mobileNav) return;
+      mobileNav.classList.remove("open");
+      mobileNav.setAttribute("aria-hidden", "true");
+      mobileNav.setAttribute("inert", "");
+      navToggle?.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("nav-open");
+    }
+    navToggle?.addEventListener("click", () => {
+      const isOpen = mobileNav?.classList.contains("open");
+      if (isOpen) closeMobileNav();
+      else openMobileNav();
+    });
+    navClose?.addEventListener("click", closeMobileNav);
+    // close when any drawer link is tapped (smooth scroll handled by browser via #hash)
+    mobileNavLinks.forEach((a) => a.addEventListener("click", () => closeMobileNav()));
+    // close on Escape
+    function onNavKey(e: KeyboardEvent) {
+      if (e.key === "Escape" && mobileNav?.classList.contains("open")) closeMobileNav();
+    }
+    window.addEventListener("keydown", onNavKey);
+    // close if user resizes back to desktop while drawer is open
+    function onResizeCloseNav() {
+      if (window.innerWidth > 900 && mobileNav?.classList.contains("open")) closeMobileNav();
+    }
+    window.addEventListener("resize", onResizeCloseNav);
 
     // ─── clock (IST) ────────────────────────────────────────────────
     function tick() {
@@ -623,6 +667,8 @@ export function ClientRuntime() {
       window.removeEventListener("resize", updateTimelineFill);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("keydown", onGlobalKey);
+      window.removeEventListener("keydown", onNavKey);
+      window.removeEventListener("resize", onResizeCloseNav);
       window.removeEventListener("scroll", onScrollParallax);
       window.removeEventListener("resize", moveRailIndicator);
       heroSec?.removeEventListener("mousemove", onHeroMove);
@@ -635,6 +681,8 @@ export function ClientRuntime() {
       io.disconnect();
       tlIo.disconnect();
       secIo.disconnect();
+      // make sure body scroll is restored if component unmounts with drawer open
+      document.body.classList.remove("nav-open");
     };
   }, []);
 

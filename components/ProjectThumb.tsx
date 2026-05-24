@@ -1,7 +1,22 @@
 // Decorative SVG thumbs ported verbatim from the design source so the cards-mode
 // visuals stay pixel-identical. IDs are scoped per-thumb to avoid linearGradient collisions.
 
-export function ProjectThumb({ id, label }: { id: number; label: string }) {
+import { ProjectMediaThumb } from "./ProjectMediaThumb";
+
+export function ProjectThumb({
+  id,
+  label,
+  media,
+  href,
+}: {
+  id: number;
+  label: string;
+  media?: string;
+  href?: string;
+}) {
+  if (media) {
+    return <ProjectMediaThumb media={media} label={label} href={href} />;
+  }
   const gradId = `proj-grad-${id}`;
   switch (id) {
     case 1:

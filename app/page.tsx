@@ -43,6 +43,18 @@ export default async function Page() {
           <span className="sr-only">Location: Mumbai, India</span>
           <span aria-hidden="true">· MUMBAI, IN</span>
         </div>
+        <button
+          type="button"
+          className="nav-toggle"
+          id="nav-toggle"
+          aria-label="Open navigation menu"
+          aria-controls="mobile-nav"
+          aria-expanded="false"
+        >
+          <span className="nav-toggle-bar" />
+          <span className="nav-toggle-bar" />
+          <span className="nav-toggle-bar" />
+        </button>
       </header>
 
       <nav className="side-rail" id="rail" aria-label="Section navigation">
@@ -52,6 +64,65 @@ export default async function Page() {
           </a>
         ))}
       </nav>
+
+      {/* Mobile nav drawer */}
+      <div
+        className="mobile-nav"
+        id="mobile-nav"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+        aria-hidden="true"
+        inert
+      >
+        <div className="mobile-nav-head">
+          <span className="mobile-nav-brand">VANSH.PATIL<span aria-hidden="true">/</span>ML-ENG</span>
+          <button
+            type="button"
+            className="mobile-nav-close"
+            id="nav-close"
+            aria-label="Close navigation menu"
+          >
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="square"
+            >
+              <path d="M2 2 L12 12 M12 2 L2 12" />
+            </svg>
+          </button>
+        </div>
+        <nav className="mobile-nav-list" aria-label="Section navigation (mobile)">
+          {NAV_SECTIONS.map((s, i) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              data-section={s.id}
+              className="mobile-nav-link"
+              style={{ ['--i' as unknown as string]: String(i) } as React.CSSProperties}
+            >
+              <span className="mobile-nav-num">{String(i).padStart(2, '0')}</span>
+              <span className="mobile-nav-label">{s.label}</span>
+              <span className="mobile-nav-arrow" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </nav>
+        <div className="mobile-nav-foot">
+          <a href="/resume.pdf" download className="mobile-nav-cta">
+            <span aria-hidden="true">⤓</span> Résumé · PDF
+          </a>
+          <div className="mobile-nav-status">
+            <span className="dot" aria-hidden="true" />
+            <span>MUMBAI · IN</span>
+          </div>
+        </div>
+      </div>
 
       <main id="main-content" tabIndex={-1}>
         {/* HERO */}
@@ -76,7 +147,9 @@ export default async function Page() {
               </div>
             ))}
           </div>
-          <div className="scroll-hint" aria-hidden="true">SCROLL ↓ &nbsp; OR PRESS ⌘K</div>
+          <div className="scroll-hint" aria-hidden="true">
+            SCROLL ↓<span className="hint-kbd">&nbsp; OR PRESS ⌘K</span>
+          </div>
         </section>
 
         {/* ABOUT */}
@@ -161,8 +234,17 @@ export default async function Page() {
           </div>
           <div className="proj-list">
             {PROJECTS.map((p) => (
-              <a key={p.num} href={p.href || "#"} className="proj-row">
-                <ProjectThumb id={p.thumbId} label={p.title.toUpperCase()} />
+              <article key={p.num} className="proj-row">
+                {p.href && (
+                  <a
+                    className="proj-row-cover"
+                    href={p.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${p.title} — open live`}
+                  />
+                )}
+                <ProjectThumb id={p.thumbId} label={p.title.toUpperCase()} media={p.media} href={p.href} />
                 <div className="proj-num">{p.num}</div>
                 <div className="proj-title">
                   {p.title}
@@ -173,14 +255,42 @@ export default async function Page() {
                     </span>
                   )}
                 </div>
-                <div className="proj-desc">{p.desc}</div>
+                <div className="proj-desc">
+                  <span className="proj-desc-text">{p.desc}</span>
+                  {(p.code || p.video) && (
+                    <div className="proj-links">
+                      {p.code && (
+                        <a
+                          className="proj-link"
+                          href={p.code}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${p.title} — source code`}
+                        >
+                          Code ↗
+                        </a>
+                      )}
+                      {p.video && (
+                        <a
+                          className="proj-link"
+                          href={p.video}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${p.title} — demo video`}
+                        >
+                          Video ↗
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
                 <div className="proj-stack">
                   {p.stack.map((s) => (
                     <span key={s}>{s}</span>
                   ))}
                 </div>
                 <div className="proj-arrow" aria-hidden="true">↗</div>
-              </a>
+              </article>
             ))}
           </div>
         </section>

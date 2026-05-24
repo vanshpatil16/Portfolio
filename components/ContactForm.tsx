@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 
-type Status = { state: "idle" | "loading" | "ok" | "err"; msg: string };
+type Status = { state: "idle" | "loading" | "ok" | "warn" | "err"; msg: string };
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>({ state: "idle", msg: "READY" });
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const payload = {
       name: String(fd.get("name") || ""),
       email: String(fd.get("email") || ""),
@@ -24,12 +25,28 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Request failed");
+      let data: { ok?: boolean; delivered?: boolean; configured?: boolean; error?: string; note?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        /* response wasn't JSON */
       }
-      setStatus({ state: "ok", msg: "✓ MESSAGE RECEIVED · I'LL REPLY SOON" });
-      e.currentTarget.reset();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || `Request failed (HTTP ${res.status})`);
+      }
+      if (data.delivered) {
+        setStatus({ state: "ok", msg: "✓ MESSAGE SENT · I'LL REPLY SOON" });
+      } else {
+        // Backend accepted the message but couldn't email it (no Resend config
+        // or Resend rejected it). Be honest with the user.
+        setStatus({
+          state: "warn",
+          msg: data.configured
+            ? "✓ MESSAGE LOGGED · EMAIL DELIVERY FAILED — TRY EMAIL DIRECTLY"
+            : "✓ MESSAGE LOGGED · EMAIL DELIVERY OFFLINE — REACH ME AT PATILVANSH822@GMAIL.COM",
+        });
+      }
+      form.reset();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       setStatus({ state: "err", msg: `✗ ${msg.toUpperCase()}` });
@@ -74,7 +91,9 @@ export function ContactForm() {
           {status.state === "loading" ? "Sending…" : <>Send signal <span aria-hidden="true">→</span></>}
         </button>
         <span
-          className={`status ${status.state === "ok" ? "ok" : status.state === "err" ? "err" : ""}`}
+          className={`status ${
+            status.state === "ok" ? "ok" : status.state === "err" ? "err" : status.state === "warn" ? "warn" : ""
+          }`}
           role="status"
           aria-live="polite"
         >

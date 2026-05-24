@@ -34,11 +34,14 @@ export type Project = {
   thumbId: number;
   tag?: string;
   href?: string;
+  code?: string;
+  video?: string;
+  media?: string;
 };
 
 export const HERO = {
   eyebrow: "AVAILABLE FOR SUMMER '26 · RESEARCH & ML ROLES",
-  titleHtml: `Vansh<br>Pa<em>til</em>.`,
+  titleHtml: `<span class="ht-line">Vansh</span> <span class="ht-line">Pa<em>til</em>.</span>`,
   roleHtml: `<span class="hl">ML ENGINEER</span> <span class="sep">·</span> RESEARCHER <span class="sep">·</span> <span class="hl">IIT PATNA</span>`,
   sub: `Computer Science undergrad researching transformer architectures and speech processing at <strong>IIT Patna's Speech &amp; NLP Lab</strong>. I ship end-to-end ML pipelines — from multimodal parsing to production FastAPI backends — and occasionally win hackathons in 24 hours.`,
   meta: [
@@ -130,6 +133,7 @@ export const PROJECTS: Project[] = [
     desc: "Real-time bi-directional Sign↔Speech platform with sub-200ms inference. MediaPipe landmarks, TFLite, SiGML 3D avatars, and live Jitsi translation overlays.",
     stack: ["MediaPipe", "TFLite", "FastAPI"],
     thumbId: 1,
+    href: "https://signsync-brown.vercel.app/",
   },
   {
     num: "/002",
@@ -137,6 +141,8 @@ export const PROJECTS: Project[] = [
     desc: "Knowledge-graph-driven narrative platform extracting entities and relationships from 10k+ docs. RAG + LLM validation detecting inconsistencies at 92% precision.",
     stack: ["Neo4j", "Pinecone", "spaCy", "Docker"],
     thumbId: 2,
+    href: "https://nolan-lemon.vercel.app/",
+    video: "https://drive.google.com/file/d/16jQxOQHNO7lU40cTjOfJm8jU2WXLV84K/view",
   },
   {
     num: "/003",
@@ -144,6 +150,8 @@ export const PROJECTS: Project[] = [
     desc: "Financial analytics platform for time-series forecasting and peer benchmarking. NLP sentiment over 500+ daily articles; 60% lower load time via caching.",
     stack: ["Python", "Streamlit", "Finnhub"],
     thumbId: 3,
+    href: "https://market-analysis-vanshpatil.streamlit.app/",
+    code: "https://github.com/vanshpatil16/stock-market-peer-analysis",
   },
   {
     num: "/004",
@@ -152,6 +160,8 @@ export const PROJECTS: Project[] = [
     desc: "Automated claim extraction from scientific papers. Multimodal parsing with Docling + vision models, hybrid Neo4j/LanceDB semantic search.",
     stack: ["Docling", "Neo4j", "LanceDB"],
     thumbId: 4,
+    href: "https://omkarkudalkar23-citationedge.hf.space/",
+    media: "/projects/citationedge.gif",
   },
 ];
 
