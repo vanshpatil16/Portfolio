@@ -163,6 +163,24 @@ export const PROJECTS: Project[] = [
     href: "https://omkarkudalkar23-citationedge.hf.space/",
     media: "/projects/citationedge.gif",
   },
+  {
+    num: "/005",
+    title: "WhatsApp Chat Analyzer",
+    desc: "Conversation analytics over exported chats — message volume, active hours, emoji & word distributions, sentiment trends and per-user breakdowns.",
+    stack: ["Python", "Streamlit", "Pandas", "NLTK"],
+    thumbId: 5,
+    href: "https://vansh-whatsapp-chat-analyzer.streamlit.app/",
+    code: "https://github.com/vanshpatil16/whatsapp-chat-analyzer/tree/my-new-branch",
+  },
+  {
+    num: "/006",
+    title: "IPL Win Predictor",
+    desc: "Live IPL match win-probability estimator trained on a decade of ball-by-ball data. Logistic regression pipeline served through an interactive Streamlit UI.",
+    stack: ["Python", "Sklearn", "Streamlit", "Pandas"],
+    thumbId: 6,
+    href: "https://ipl-win-predictor-vanshpatil.streamlit.app/",
+    code: "https://github.com/vanshpatil16/IPL-Win-Predictor/tree/main",
+  },
 ];
 
 export const SKILL_ROWS: SkillRow[] = [

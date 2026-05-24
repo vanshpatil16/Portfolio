@@ -122,6 +122,67 @@ export function ProjectThumb({
           </svg>
         </div>
       );
+    case 5:
+      return (
+        <div className="proj-thumb">
+          <span className="pt-label">{label}</span>
+          <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="oklch(0.6 0.16 155)" />
+                <stop offset="100%" stopColor="oklch(0.35 0.13 165)" />
+              </linearGradient>
+            </defs>
+            <rect width="400" height="140" fill={`url(#${gradId})`} />
+            <rect x="22" y="32" width="92" height="22" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.3)" strokeWidth="1" data-draw />
+            <rect x="42" y="60" width="78" height="20" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" strokeWidth="1" data-draw />
+            <rect x="22" y="86" width="100" height="22" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.3)" strokeWidth="1" data-draw />
+            <line x1="30" y1="42" x2="100" y2="42" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
+            <line x1="50" y1="70" x2="108" y2="70" stroke="rgba(255,255,255,0.35)" strokeWidth="1" />
+            <line x1="30" y1="96" x2="112" y2="96" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
+            <rect x="150" y="90" width="10" height="20" fill="rgba(255,255,255,0.55)" data-draw />
+            <rect x="166" y="74" width="10" height="36" fill="rgba(255,255,255,0.7)" data-draw />
+            <rect x="182" y="58" width="10" height="52" fill="rgba(255,255,255,0.85)" data-draw />
+            <rect x="198" y="80" width="10" height="30" fill="rgba(255,255,255,0.6)" data-draw />
+            <rect x="214" y="66" width="10" height="44" fill="rgba(255,255,255,0.75)" data-draw />
+            <text data-fade x="240" y="56" fontFamily="monospace" fontSize="10" fill="rgba(255,255,255,0.5)" letterSpacing="2">CHAT ANALYTICS</text>
+            <text data-fade x="240" y="78" fontFamily="monospace" fontSize="14" fill="rgba(255,255,255,0.9)">WhatsApp</text>
+            <text data-fade x="240" y="96" fontFamily="monospace" fontSize="9" fill="rgba(255,255,255,0.4)">Streamlit · Pandas · NLTK</text>
+          </svg>
+        </div>
+      );
+    case 6:
+      return (
+        <div className="proj-thumb">
+          <span className="pt-label">{label}</span>
+          <svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="oklch(0.65 0.2 40)" />
+                <stop offset="100%" stopColor="oklch(0.38 0.18 25)" />
+              </linearGradient>
+            </defs>
+            <rect width="400" height="140" fill={`url(#${gradId})`} />
+            <rect x="22" y="50" width="160" height="14" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" strokeWidth="1" data-draw />
+            <rect x="22" y="50" width="108" height="14" fill="rgba(255,255,255,0.78)" data-draw />
+            <text data-fade x="22" y="42" fontFamily="monospace" fontSize="9" fill="rgba(255,255,255,0.55)" letterSpacing="1">WIN PROBABILITY · 67%</text>
+            <rect x="22" y="78" width="160" height="14" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" strokeWidth="1" data-draw />
+            <rect x="22" y="78" width="53" height="14" fill="rgba(255,255,255,0.5)" data-draw />
+            <text data-fade x="22" y="106" fontFamily="monospace" fontSize="9" fill="rgba(255,255,255,0.4)" letterSpacing="1">CHASING · 33%</text>
+            <line x1="200" y1="38" x2="200" y2="110" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+            <polyline
+              points="210,95 230,80 250,86 270,62 290,68 310,48 330,55 350,35"
+              fill="none"
+              stroke="rgba(255,255,255,0.7)"
+              strokeWidth="2"
+              strokeLinejoin="round"
+              data-draw
+            />
+            <circle cx="350" cy="35" r="3.5" fill="rgba(255,255,255,0.95)" />
+            <text data-fade x="210" y="118" fontFamily="monospace" fontSize="9" fill="rgba(255,255,255,0.45)">over-by-over · ML</text>
+          </svg>
+        </div>
+      );
   }
   return null;
 }
