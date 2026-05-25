@@ -12,7 +12,10 @@ import { ContactForm } from "@/components/ContactForm";
 import { ClientRuntime } from "@/components/ClientRuntime";
 import { NeuralBackground } from "@/components/NeuralBackground";
 import { AchievementsGrid } from "@/components/achievements/AchievementsGrid";
+import { SpotlightTracker } from "@/components/achievements/SpotlightTracker";
 import { SkillsSection } from "@/components/SkillsSection";
+import { VideoText } from "@/components/VideoText";
+import { Globe } from "@/components/Globe";
 import { getResolvedAchievements } from "@/lib/achievements-server";
 
 
@@ -23,6 +26,7 @@ export default async function Page() {
       <div className="grain" />
       <div className="cursor" />
       <div className="cursor-dot" />
+      <SpotlightTracker />
 
       <header className="topbar" role="banner">
         <div className="brand">
@@ -119,6 +123,19 @@ export default async function Page() {
         {/* HERO */}
         <section id="hero" className="hero" aria-labelledby="hero-title">
           <NeuralBackground particleCount={300} trailOpacity={0.08} speed={0.5} />
+          <div className="hero-eyebrow">{HERO.eyebrow}</div>
+          <h1 id="hero-title" className="hero-title hero-title-video">
+            <span className="sr-only">Vansh Patil</span>
+            <VideoText
+              src="https://cdn.magicui.design/ocean-small.webm"
+              vbWidth={1000}
+              vbHeight={260}
+              fontSize={210}
+              fontWeight={500}
+            >
+              Vansh Patil
+            </VideoText>
+          </h1>
           <div className="hero-avatar">
             {/* avatar shipped in /public/assets */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -126,8 +143,6 @@ export default async function Page() {
             <span className="hero-shine" aria-hidden="true" />
             <span className="hero-tag">№ 01 · MUMBAI · IN</span>
           </div>
-          <div className="hero-eyebrow">{HERO.eyebrow}</div>
-          <h1 id="hero-title" className="hero-title" dangerouslySetInnerHTML={{ __html: HERO.titleHtml }} />
           <div className="hero-role" dangerouslySetInnerHTML={{ __html: HERO.roleHtml }} />
           <p className="hero-sub" dangerouslySetInnerHTML={{ __html: HERO.sub }} />
           <div className="hero-meta">
@@ -225,7 +240,7 @@ export default async function Page() {
           </div>
           <div className="proj-list">
             {PROJECTS.map((p) => (
-              <article key={p.num} className="proj-row">
+              <article key={p.num} className="proj-row" data-spotlight>
                 {p.href && (
                   <a
                     className="proj-row-cover"
@@ -310,12 +325,15 @@ export default async function Page() {
             <span className="section-label">06 / Signal</span>
             <h2 className="section-title">Say hi.</h2>
           </div>
-          <h3 className="contact-title">
-            Got something
-            <br />
-            worth <em>building</em>?<br />
-            Let&apos;s talk.
-          </h3>
+          <div className="contact-hero">
+            <h3 className="contact-title">
+              Got something
+              <br />
+              worth <em>building</em>?<br />
+              Let&apos;s talk.
+            </h3>
+            <Globe className="contact-globe" />
+          </div>
           <div className="contact-links">
             {CONTACT_LINKS.map((c) => (
               <a

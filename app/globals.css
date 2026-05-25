@@ -235,7 +235,7 @@ section { padding: 120px 0; position: relative; scroll-margin-top: 80px; }
   .hero-avatar {
     position: relative; top: auto; right: auto; bottom: auto;
     width: 100%; max-width: none; min-width: 0;
-    height: 260px; margin-bottom: 28px; order: -1;
+    height: 260px; margin: 24px 0 28px;
   }
   .hero-avatar img { object-position: 50% 0%; }  /* keep face at top on mobile */
   .hero-tag { display: none; }
@@ -2077,6 +2077,18 @@ body.touch-device .cursor, body.touch-device .cursor-dot { display: none; }
 .ach-card[data-spotlight] > .ach-body { position: relative; z-index: 1; }
 .ach-card[data-spotlight] > .ach-arrow { z-index: 2; }
 
+/* project rows reuse the same spotlight pseudos; lift their grid children above
+   the radial glow so text stays crisp and the row-cover stays clickable. */
+.proj-row[data-spotlight] > .proj-num,
+.proj-row[data-spotlight] > .proj-title,
+.proj-row[data-spotlight] > .proj-desc,
+.proj-row[data-spotlight] > .proj-stack,
+.proj-row[data-spotlight] > .proj-arrow,
+.proj-row[data-spotlight] > .proj-thumb,
+.proj-row[data-spotlight] > .proj-thumb-media { position: relative; z-index: 1; }
+.proj-row[data-spotlight] > .proj-row-cover { z-index: 2; }
+.proj-row[data-spotlight] { --spot-size: 380px; }
+
 /* honor reduced-motion + skip on touch (no cursor to follow) */
 @media (prefers-reduced-motion: reduce) {
   [data-spotlight]::before,
@@ -2672,5 +2684,108 @@ input[type="button"],
   .hero-avatar { height: 260px; }
   .mobile-nav-link .mobile-nav-label { font-size: 23px; }
   .mobile-nav-head { padding: 16px 18px 16px 22px; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   VIDEO TEXT — magicui port (SVG mask over <video>)
+   The <video> fills the box; the <svg> overlay paints page-bg
+   everywhere except the text glyphs, revealing the video through
+   the letterforms. A `--vt-fallback` colour sits behind the video
+   so the glyphs stay visible even if the video can't load.
+   ───────────────────────────────────────────────────────────── */
+.video-text {
+  --vt-fallback: var(--accent);
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1000 / 260;
+  overflow: hidden;
+  display: block;
+  isolation: isolate;
+  /* fallback colour behind the video — visible through the text mask
+     while the video is loading or if it never loads at all. */
+  background: var(--vt-fallback);
+}
+.video-text .vt-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  filter: saturate(1.15) contrast(1.05);
+}
+.video-text .vt-overlay {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
+}
+
+/* Hero slot: constrain to the left text column so the SVG overlay
+   never paints over the absolute-positioned avatar on the right.
+   z-index keeps the title above the avatar in case widths overlap
+   at narrow desktops. */
+.hero-title-video {
+  padding: 0; margin: 0 0 24px;
+  line-height: 0;
+  max-width: min(720px, 52vw);
+  position: relative;
+  z-index: 3;
+}
+.hero-title-video .video-text { max-width: 100%; }
+
+@media (max-width: 900px) {
+  .hero-title-video { max-width: 100%; }
+}
+@media (max-width: 700px) {
+  .video-text { aspect-ratio: 1000 / 300; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-text .vt-video { animation: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLOBE — magicui port via `cobe` (WebGL canvas)
+   Sits beside the contact title at desktop, stacks below at mobile.
+   ───────────────────────────────────────────────────────────── */
+.contact-hero {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 420px);
+  gap: 48px;
+  align-items: center;
+  margin-bottom: 48px;
+}
+.contact-hero .contact-title { margin: 0; }
+
+.globe-wrap {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
+}
+.globe-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  cursor: grab;
+  contain: layout paint;
+  touch-action: pan-y;
+}
+.globe-canvas:active { cursor: grabbing; }
+
+@media (max-width: 900px) {
+  .contact-hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .globe-wrap { max-width: 320px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .globe-canvas { transition: none; }
 }
 
