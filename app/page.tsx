@@ -127,7 +127,7 @@ export default async function Page() {
           <h1 id="hero-title" className="hero-title hero-title-video">
             <span className="sr-only">Vansh Patil</span>
             <VideoText
-              src="https://cdn.magicui.design/ocean-small.webm"
+              src="/assets/ocean-small.webm"
               vbWidth={1000}
               vbHeight={260}
               fontSize={210}
