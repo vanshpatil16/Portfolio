@@ -173,9 +173,8 @@ export async function POST(req: Request) {
       note,
     });
   } catch (e) {
-    const detail = e instanceof Error ? e.message : "Unknown server error";
     console.error("[contact] unhandled error:", e);
-    return NextResponse.json({ ok: false, error: `Server error: ${detail}` }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Server error. Please try again." }, { status: 500 });
   }
 }
 

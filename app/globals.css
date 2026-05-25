@@ -2712,6 +2712,9 @@ input[type="button"],
   z-index: 0;
   pointer-events: none;
   filter: saturate(1.15) contrast(1.05);
+  /* screen blend: black (pre-load / no-autoplay) = transparent,
+     so the accent fallback always shows through the text shape. */
+  mix-blend-mode: screen;
 }
 .video-text .vt-overlay {
   position: absolute; inset: 0;
