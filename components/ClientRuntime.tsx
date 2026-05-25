@@ -113,6 +113,14 @@ export function ClientRuntime() {
           }
           if (node.nodeType === Node.ELEMENT_NODE) {
             const el = node as HTMLElement;
+            // Leave .video-text untouched. Its background-clip:text gradient
+            // only paints the element's OWN text glyphs; wrapping the inner
+            // words in inline-block .word spans makes the descendants
+            // invisible (transparent color, no inherited gradient), causing
+            // the hero name to disappear right after hydration.
+            if (el.classList?.contains("video-text")) {
+              return [node];
+            }
             // wrap an <em> as a single word, preserving children
             if (el.tagName === "EM") {
               const span = document.createElement("em");
