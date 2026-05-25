@@ -78,6 +78,8 @@ export function VideoText({
               y="50%"
               textAnchor="middle"
               dominantBaseline="central"
+              textLength={vbWidth - 40}
+              lengthAdjust="spacingAndGlyphs"
               fill="black"
             >
               {children}
