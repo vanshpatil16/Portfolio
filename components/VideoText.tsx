@@ -1,99 +1,40 @@
 "use client";
 
-import { useId } from "react";
-
 type Props = {
-  src: string;
+  /** Retained for API compatibility — current implementation is CSS-only. */
+  src?: string;
   children: string;
+  className?: string;
+  /** Retained for API compat — ignored. */
   vbWidth?: number;
   vbHeight?: number;
   fontSize?: number;
   fontWeight?: number | string;
-  className?: string;
   poster?: string;
 };
 
 /**
- * Video-through-text effect (plain-CSS port of magicui/video-text).
+ * Reliable text display for the hero name.
  *
- * Rendering stack (bottom → top):
- *   1. Container div  — background: var(--accent)  [always-visible fallback]
- *   2. <video>        — mix-blend-mode: screen      [black frames = transparent]
- *   3. SVG overlay    — paints var(--bg) everywhere outside the text glyphs
+ * Earlier this component tried to recreate magicui/video-text via an SVG
+ * mask over a <video>. That approach proved brittle in production due to
+ * three compounding issues:
+ *   1. SVG presentation attributes don't resolve CSS custom properties.
+ *   2. Web font load races caused the mask glyphs to overflow the viewBox
+ *      after the font upgraded from the system fallback.
+ *   3. Dark video frames + dark page bg made the cutout invisible even
+ *      when the mask did work.
  *
- * Two previous bugs fixed:
- *   • fontFamily/fontWeight/fontSize moved to inline SVG <style> so CSS vars
- *     and web font names resolve correctly — SVG presentation attributes do
- *     NOT resolve CSS custom properties.
- *   • overlay rect fill moved to style attribute for the same reason.
+ * This version drops the video entirely and uses background-clip:text with
+ * an animated gradient — same "premium" hero vibe, zero runtime risk.
  */
-export function VideoText({
-  src,
-  children,
-  vbWidth = 1000,
-  vbHeight = 260,
-  fontSize = 210,
-  fontWeight = 500,
-  className,
-  poster,
-}: Props) {
-  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
-  const maskId = `vtm-${uid}`;
-
+export function VideoText({ children, className }: Props) {
   return (
-    <div className={"video-text" + (className ? " " + className : "")}>
-      <video
-        className="vt-video"
-        src={src}
-        poster={poster}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-      />
-      <svg
-        className="vt-overlay"
-        viewBox={`0 0 ${vbWidth} ${vbHeight}`}
-        preserveAspectRatio="xMidYMid meet"
-        aria-label={children}
-        role="img"
-      >
-        {/* Inline <style> so CSS custom properties and web font names
-            resolve inside the SVG rendering context */}
-        <style>{`
-          #${maskId}-text {
-            font-family: 'Instrument Serif', 'Times New Roman', serif;
-            font-weight: ${fontWeight};
-            font-size: ${fontSize}px;
-          }
-        `}</style>
-        <defs>
-          <mask id={maskId}>
-            <rect width="100%" height="100%" fill="white" />
-            <text
-              id={`${maskId}-text`}
-              x="50%"
-              y="50%"
-              textAnchor="middle"
-              dominantBaseline="central"
-              textLength={vbWidth - 40}
-              lengthAdjust="spacingAndGlyphs"
-              fill="black"
-            >
-              {children}
-            </text>
-          </mask>
-        </defs>
-        {/* style= resolves CSS vars correctly; fill= attribute would not */}
-        <rect
-          width="100%"
-          height="100%"
-          style={{ fill: "var(--bg, #0a0a0a)" }}
-          mask={`url(#${maskId})`}
-        />
-      </svg>
-    </div>
+    <span
+      className={"video-text" + (className ? " " + className : "")}
+      aria-label={children}
+    >
+      <span aria-hidden="true">{children}</span>
+    </span>
   );
 }

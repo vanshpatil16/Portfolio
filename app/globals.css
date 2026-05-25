@@ -2687,65 +2687,56 @@ input[type="button"],
 }
 
 /* ─────────────────────────────────────────────────────────────
-   VIDEO TEXT — magicui port (SVG mask over <video>)
-   The <video> fills the box; the <svg> overlay paints page-bg
-   everywhere except the text glyphs, revealing the video through
-   the letterforms. A `--vt-fallback` colour sits behind the video
-   so the glyphs stay visible even if the video can't load.
+   VIDEO TEXT — animated gradient (background-clip:text)
+   Reliable replacement for the earlier SVG-mask-over-video approach.
+   Glyphs render with the real Instrument Serif font, never disappear
+   on font-load, and have no dependence on network/video playback.
    ───────────────────────────────────────────────────────────── */
 .video-text {
-  --vt-fallback: var(--accent);
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1000 / 260;
-  overflow: hidden;
-  display: block;
-  isolation: isolate;
-  /* fallback colour behind the video — visible through the text mask
-     while the video is loading or if it never loads at all. */
-  background: var(--vt-fallback);
-}
-.video-text .vt-video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  pointer-events: none;
-  filter: saturate(1.15) contrast(1.05);
-  /* screen blend: black (pre-load / no-autoplay) = transparent,
-     so the accent fallback always shows through the text shape. */
-  mix-blend-mode: screen;
-}
-.video-text .vt-overlay {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  z-index: 1;
-  pointer-events: none;
-  display: block;
+  display: inline-block;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(64px, 12vw, 180px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+
+  background: linear-gradient(
+    115deg,
+    var(--accent) 0%,
+    #ffffff 28%,
+    var(--accent) 52%,
+    #cccccc 78%,
+    var(--accent) 100%
+  );
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
-/* Hero slot: constrain to the left text column so the SVG overlay
-   never paints over the absolute-positioned avatar on the right.
-   z-index keeps the title above the avatar in case widths overlap
-   at narrow desktops. */
+@media (prefers-reduced-motion: no-preference) {
+  .video-text { animation: vt-shimmer 8s ease-in-out infinite; }
+}
+
+@keyframes vt-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Hero slot — constrain so the gradient text never overlaps the
+   absolute-positioned avatar on the right. */
 .hero-title-video {
-  padding: 0; margin: 0 0 24px;
-  line-height: 0;
+  padding: 0;
+  margin: 0 0 24px;
   max-width: min(720px, 52vw);
   position: relative;
   z-index: 3;
+  line-height: 0.92;
 }
-.hero-title-video .video-text { max-width: 100%; }
 
 @media (max-width: 900px) {
   .hero-title-video { max-width: 100%; }
-}
-@media (max-width: 700px) {
-  .video-text { aspect-ratio: 1000 / 300; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .video-text .vt-video { animation: none; }
 }
 
 /* ─────────────────────────────────────────────────────────────
