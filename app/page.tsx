@@ -4,7 +4,6 @@ import {
   ABOUT_CARD,
   EXPERIENCE,
   PROJECTS,
-  SKILL_ROWS,
   CONTACT_LINKS,
   NAV_SECTIONS,
 } from "@/lib/content";
@@ -13,17 +12,9 @@ import { ContactForm } from "@/components/ContactForm";
 import { ClientRuntime } from "@/components/ClientRuntime";
 import { NeuralBackground } from "@/components/NeuralBackground";
 import { AchievementsGrid } from "@/components/achievements/AchievementsGrid";
+import { SkillsSection } from "@/components/SkillsSection";
 import { getResolvedAchievements } from "@/lib/achievements-server";
 
-function ProficiencyDots({ on }: { on: number }) {
-  return (
-    <span className="pt-dots">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={"pt-dot" + (i < on ? " on" : "")} />
-      ))}
-    </span>
-  );
-}
 
 export default async function Page() {
   const achievements = await getResolvedAchievements();
@@ -301,93 +292,7 @@ export default async function Page() {
             <span className="section-label">04 / Stack</span>
             <h2 className="section-title">Tools of the trade.</h2>
           </div>
-          <div className="ptable reveal">
-            <div className="ptable-toolbar">
-              <div className="ptable-filters">
-                <button className="pt-chip active" data-filter="all">All</button>
-                <button className="pt-chip" data-filter="languages">Languages</button>
-                <button className="pt-chip" data-filter="ml">ML / AI</button>
-                <button className="pt-chip" data-filter="data">Data</button>
-                <button className="pt-chip" data-filter="backend">Backend</button>
-                <button className="pt-chip" data-filter="infra">Infra</button>
-                <button className="pt-chip" data-filter="cv">CV</button>
-              </div>
-              <div className="ptable-legend">
-                <span>PROFICIENCY</span>
-                <span className="leg-dots">
-                  <span className="leg-dot on" />
-                  <span className="leg-dot on" />
-                  <span className="leg-dot on" />
-                  <span className="leg-dot" />
-                  <span className="leg-dot" />
-                </span>
-                <span>· 41 ELEMENTS · 6 CATEGORIES</span>
-              </div>
-            </div>
-
-            <div className="pt-rows" id="pt-rows">
-              {SKILL_ROWS.map((row) => (
-                <div key={row.cat} className="pt-row" data-cat={row.cat}>
-                  <div className="pt-row-label reveal">
-                    <span className="lbl-num">{row.num}</span>
-                    <span className="lbl-name">{row.name}</span>
-                  </div>
-                  <div className="pt-row-items reveal">
-                    {row.items.map((it) => (
-                      <div
-                        key={it.n}
-                        className={`pt-cell ${it.theme}`}
-                        data-cat={row.cat}
-                        data-n={it.n}
-                        data-sym={it.sym}
-                        data-name={it.name}
-                        data-desc={it.desc}
-                        data-projects={it.projects}
-                        data-dots={it.dots}
-                        data-cat-name={row.name}
-                      >
-                        <div className="pt-num">
-                          <span>{String(it.n).padStart(2, "0")}</span>
-                          <ProficiencyDots on={it.dots} />
-                        </div>
-                        <div className="pt-sym">{it.sym}</div>
-                        <div className="pt-name">{it.name}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-readout" id="pt-readout">
-              <div className="pt-ro-symbol">
-                <div className="big" id="ro-sym">Py</div>
-                <div className="small" id="ro-num">No. 01</div>
-              </div>
-              <div className="pt-ro-body">
-                <div className="ro-name" id="ro-name">Python</div>
-                <div className="ro-meta">
-                  <span id="ro-cat" className="hl">Languages</span>
-                  <span className="sep">·</span>
-                  <span id="ro-desc">Primary — research, backend, scripting.</span>
-                </div>
-              </div>
-              <div className="pt-ro-stats">
-                <div className="stat">
-                  <span>Proficiency</span>
-                  <span className="v hl" id="ro-prof">● ● ● ● ●</span>
-                </div>
-                <div className="stat">
-                  <span>Projects</span>
-                  <span className="v" id="ro-proj">12</span>
-                </div>
-                <div className="stat">
-                  <span>Since</span>
-                  <span className="v">2022</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SkillsSection />
         </section>
 
         {/* ACHIEVEMENTS */}
