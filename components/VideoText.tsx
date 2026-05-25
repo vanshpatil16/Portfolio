@@ -5,42 +5,40 @@ import { useId } from "react";
 type Props = {
   src: string;
   children: string;
-  /** SVG viewBox width. Default 1000. */
   vbWidth?: number;
-  /** SVG viewBox height. Default 200. */
   vbHeight?: number;
-  /** Font size in SVG user units. Default 180. */
   fontSize?: number;
-  /** Font-family. Falls back to the page's serif var. */
-  fontFamily?: string;
-  /** Font-weight. Default 600. */
   fontWeight?: number | string;
   className?: string;
-  /** Poster image for the underlying video. */
   poster?: string;
 };
 
 /**
- * Plain-CSS port of magicui/video-text.
+ * Video-through-text effect (plain-CSS port of magicui/video-text).
  *
- * A <video> fills the container; an SVG overlay paints the page background
- * everywhere EXCEPT inside the letterforms via an SVG <mask>. White = visible,
- * black (text) = invisible — so the rect covers the area outside the glyphs,
- * revealing the video through the text shape.
+ * Rendering stack (bottom → top):
+ *   1. Container div  — background: var(--accent)  [always-visible fallback]
+ *   2. <video>        — mix-blend-mode: screen      [black frames = transparent]
+ *   3. SVG overlay    — paints var(--bg) everywhere outside the text glyphs
+ *
+ * Two previous bugs fixed:
+ *   • fontFamily/fontWeight/fontSize moved to inline SVG <style> so CSS vars
+ *     and web font names resolve correctly — SVG presentation attributes do
+ *     NOT resolve CSS custom properties.
+ *   • overlay rect fill moved to style attribute for the same reason.
  */
 export function VideoText({
   src,
   children,
   vbWidth = 1000,
-  vbHeight = 200,
-  fontSize = 180,
-  fontFamily,
-  fontWeight = 600,
+  vbHeight = 260,
+  fontSize = 210,
+  fontWeight = 500,
   className,
   poster,
 }: Props) {
-  const maskId = useId().replace(/[:]/g, "");
-  const family = fontFamily ?? "var(--serif, serif)";
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const maskId = `vtm-${uid}`;
 
   return (
     <div className={"video-text" + (className ? " " + className : "")}>
@@ -58,31 +56,40 @@ export function VideoText({
       <svg
         className="vt-overlay"
         viewBox={`0 0 ${vbWidth} ${vbHeight}`}
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         aria-label={children}
+        role="img"
       >
+        {/* Inline <style> so CSS custom properties and web font names
+            resolve inside the SVG rendering context */}
+        <style>{`
+          #${maskId}-text {
+            font-family: 'Instrument Serif', 'Times New Roman', serif;
+            font-weight: ${fontWeight};
+            font-size: ${fontSize}px;
+          }
+        `}</style>
         <defs>
-          <mask id={`vt-mask-${maskId}`}>
+          <mask id={maskId}>
             <rect width="100%" height="100%" fill="white" />
             <text
+              id={`${maskId}-text`}
               x="50%"
               y="50%"
               textAnchor="middle"
               dominantBaseline="central"
-              fontFamily={family}
-              fontWeight={fontWeight}
-              fontSize={fontSize}
               fill="black"
             >
               {children}
             </text>
           </mask>
         </defs>
+        {/* style= resolves CSS vars correctly; fill= attribute would not */}
         <rect
           width="100%"
           height="100%"
-          fill="var(--bg)"
-          mask={`url(#vt-mask-${maskId})`}
+          style={{ fill: "var(--bg, #0a0a0a)" }}
+          mask={`url(#${maskId})`}
         />
       </svg>
     </div>
