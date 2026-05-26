@@ -109,7 +109,8 @@ export function OrbitalOverlay({ skill, onClose }: Props) {
     const svg = svgRef.current;
     if (!nodes || !svg) return;
     const ns = "http://www.w3.org/2000/svg";
-    const R = 210;
+    const stageSize = nodesRef.current?.parentElement?.offsetWidth ?? 560;
+    const R = Math.round(stageSize * 0.375);
     const CX = 280;
     const CY = 280;
 
